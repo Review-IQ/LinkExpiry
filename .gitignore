@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/frontend/node_modules
+/backend/.vs/LinkExpiry
+/backend/LinkExpiry.API/bin/Debug/net8.0
+/backend/LinkExpiry.API/logs
+/backend/LinkExpiry.API/obj
