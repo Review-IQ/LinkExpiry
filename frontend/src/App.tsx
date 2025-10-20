@@ -144,7 +144,7 @@ function App() {
           }
         />
 
-        {/* Short Link Redirect - Must be before 404 */}
+        {/* Short Link Redirect - Must be last and only match valid short codes */}
         <Route path="/:shortCode" element={<ShortLinkRedirect />} />
 
         {/* 404 */}

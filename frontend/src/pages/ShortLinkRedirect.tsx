@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Lock, ExternalLink, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
@@ -7,6 +7,7 @@ import Input from '@/components/ui/Input';
 
 export default function ShortLinkRedirect() {
   const { shortCode } = useParams<{ shortCode: string }>();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [requiresPassword, setRequiresPassword] = useState(false);
   const [password, setPassword] = useState('');
@@ -21,11 +22,17 @@ export default function ShortLinkRedirect() {
   const backendUrl = import.meta.env.VITE_API_URL || 'https://localhost:34049';
 
   useEffect(() => {
-    if (shortCode && !hasChecked.current) {
+    // If no shortCode or empty, redirect to home
+    if (!shortCode || shortCode.trim() === '') {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    if (!hasChecked.current) {
       hasChecked.current = true;
       checkLink();
     }
-  }, [shortCode]);
+  }, [shortCode, navigate]);
 
   const checkLink = async () => {
     try {
@@ -158,7 +165,7 @@ export default function ShortLinkRedirect() {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Link Expired</h2>
               <p className="text-gray-600 mb-6">{expiredMessage}</p>
-              <Button onClick={() => window.location.href = '/'}>
+              <Button onClick={() => navigate('/')}>
                 Go to Home
               </Button>
             </div>
@@ -217,7 +224,7 @@ export default function ShortLinkRedirect() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => navigate('/')}
                 >
                   Cancel
                 </Button>
