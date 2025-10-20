@@ -15,6 +15,8 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<User> Users { get; }
     public IRepository<Link> Links { get; }
     public IRepository<Click> Clicks { get; }
+    public IRepository<ExpiryPage> ExpiryPages { get; }
+    public IRepository<ExpiryPageEmail> ExpiryPageEmails { get; }
 
     public UnitOfWork(AppDbContext context)
     {
@@ -22,6 +24,8 @@ public class UnitOfWork : IUnitOfWork
         Users = new Repository<User>(_context);
         Links = new Repository<Link>(_context);
         Clicks = new Repository<Click>(_context);
+        ExpiryPages = new Repository<ExpiryPage>(_context);
+        ExpiryPageEmails = new Repository<ExpiryPageEmail>(_context);
     }
 
     public async Task<int> SaveChangesAsync()

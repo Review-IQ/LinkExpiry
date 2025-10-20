@@ -59,6 +59,7 @@ public class User
     [Column("updated_at")]
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    // Navigation property
+    // Navigation properties
     public virtual ICollection<Link> Links { get; set; } = new List<Link>();
+    public virtual ICollection<ExpiryPage> ExpiryPages { get; set; } = new List<ExpiryPage>();
 }

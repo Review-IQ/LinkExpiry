@@ -11,6 +11,8 @@ public interface IUnitOfWork : IDisposable
     IRepository<User> Users { get; }
     IRepository<Link> Links { get; }
     IRepository<Click> Clicks { get; }
+    IRepository<ExpiryPage> ExpiryPages { get; }
+    IRepository<ExpiryPageEmail> ExpiryPageEmails { get; }
 
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();

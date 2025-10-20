@@ -29,6 +29,8 @@ public class CreateLinkRequest
 
     [MaxLength(500)]
     public string? CustomMessage { get; set; }
+
+    public Guid? ExpiryPageId { get; set; }
 }
 
 /// <summary>
@@ -43,6 +45,8 @@ public class UpdateLinkRequest
     public string? CustomMessage { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public Guid? ExpiryPageId { get; set; }
 }
 
 /// <summary>
@@ -65,6 +69,7 @@ public class LinkResponse
     public bool HasPassword { get; set; }
     public string? CustomMessage { get; set; }
     public string Status { get; set; } = string.Empty;
+    public Guid? ExpiryPageId { get; set; }
 }
 
 /// <summary>

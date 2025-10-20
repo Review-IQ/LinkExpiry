@@ -14,6 +14,12 @@ import type {
   PaginatedLinksResponse,
   DashboardStats,
   LinkAnalytics,
+  ExpiryPage,
+  CreateExpiryPageRequest,
+  UpdateExpiryPageRequest,
+  ExpiryPageEmail,
+  CaptureEmailRequest,
+  CaptureEmailResponse,
 } from "@/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://localhost:34049";
@@ -300,6 +306,87 @@ class ApiClient {
     if (!response.data.success) {
       throw new Error(response.data.message || "Failed to change password");
     }
+  }
+
+  // Expiry Page endpoints
+  async getExpiryPages(): Promise<ExpiryPage[]> {
+    const response = await this.client.get<ApiResponse<ExpiryPage[]>>(
+      "/api/expirypage"
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || "Failed to fetch expiry pages");
+  }
+
+  async getExpiryPage(id: string): Promise<ExpiryPage> {
+    const response = await this.client.get<ApiResponse<ExpiryPage>>(
+      `/api/expirypage/${id}`
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || "Failed to fetch expiry page");
+  }
+
+  async createExpiryPage(data: CreateExpiryPageRequest): Promise<ExpiryPage> {
+    const response = await this.client.post<ApiResponse<ExpiryPage>>(
+      "/api/expirypage",
+      data
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || "Failed to create expiry page");
+  }
+
+  async updateExpiryPage(
+    id: string,
+    data: UpdateExpiryPageRequest
+  ): Promise<ExpiryPage> {
+    const response = await this.client.put<ApiResponse<ExpiryPage>>(
+      `/api/expirypage/${id}`,
+      data
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || "Failed to update expiry page");
+  }
+
+  async deleteExpiryPage(id: string): Promise<void> {
+    const response = await this.client.delete<ApiResponse>(
+      `/api/expirypage/${id}`
+    );
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Failed to delete expiry page");
+    }
+  }
+
+  async getExpiryPageEmails(id: string): Promise<ExpiryPageEmail[]> {
+    const response = await this.client.get<ApiResponse<ExpiryPageEmail[]>>(
+      `/api/expirypage/${id}/emails`
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(
+      response.data.message || "Failed to fetch captured emails"
+    );
+  }
+
+  async captureEmail(
+    id: string,
+    data: CaptureEmailRequest
+  ): Promise<CaptureEmailResponse> {
+    const response = await this.client.post<ApiResponse<CaptureEmailResponse>>(
+      `/api/expirypage/${id}/capture-email`,
+      data
+    );
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || "Failed to capture email");
   }
 }
 

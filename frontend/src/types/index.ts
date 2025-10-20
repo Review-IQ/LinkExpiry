@@ -60,6 +60,7 @@ export interface Link {
   hasPassword: boolean;
   passwordHash?: string; // For checking if password exists
   customMessage?: string;
+  expiryPageId?: string;
   status: 'Active' | 'Expired';
 }
 
@@ -71,6 +72,7 @@ export interface CreateLinkRequest {
   maxViews?: number;
   password?: string;
   customMessage?: string;
+  expiryPageId?: string;
 }
 
 export interface UpdateLinkRequest {
@@ -82,6 +84,7 @@ export interface UpdateLinkRequest {
   expiresAt?: string;
   maxViews?: number;
   password?: string;
+  expiryPageId?: string;
 }
 
 export interface PaginatedLinksResponse {
@@ -173,4 +176,87 @@ export interface RecentClick {
   device?: string; // Alias for deviceType
   browser?: string;
   referrer?: string;
+}
+
+// Expiry Page Types
+export interface ExpiryPage {
+  id: string;
+  userId: string;
+  name: string;
+  title: string;
+  message?: string;
+  logoUrl?: string;
+  backgroundColor: string;
+  ctaButtonText?: string;
+  ctaButtonUrl?: string;
+  ctaButtonColor: string;
+  socialFacebook?: string;
+  socialTwitter?: string;
+  socialInstagram?: string;
+  socialLinkedin?: string;
+  socialWebsite?: string;
+  customCss?: string;
+  enableEmailCapture: boolean;
+  emailCaptureText?: string;
+  createdAt: string;
+  updatedAt: string;
+  linksUsingCount: number;
+  emailsCaptured: number;
+}
+
+export interface CreateExpiryPageRequest {
+  name: string;
+  title: string;
+  message?: string;
+  logoUrl?: string;
+  backgroundColor?: string;
+  ctaButtonText?: string;
+  ctaButtonUrl?: string;
+  ctaButtonColor?: string;
+  socialFacebook?: string;
+  socialTwitter?: string;
+  socialInstagram?: string;
+  socialLinkedin?: string;
+  socialWebsite?: string;
+  customCss?: string;
+  enableEmailCapture?: boolean;
+  emailCaptureText?: string;
+}
+
+export interface UpdateExpiryPageRequest {
+  name?: string;
+  title?: string;
+  message?: string;
+  logoUrl?: string;
+  backgroundColor?: string;
+  ctaButtonText?: string;
+  ctaButtonUrl?: string;
+  ctaButtonColor?: string;
+  socialFacebook?: string;
+  socialTwitter?: string;
+  socialInstagram?: string;
+  socialLinkedin?: string;
+  socialWebsite?: string;
+  customCss?: string;
+  enableEmailCapture?: boolean;
+  emailCaptureText?: string;
+}
+
+export interface CaptureEmailRequest {
+  email: string;
+}
+
+export interface CaptureEmailResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ExpiryPageEmail {
+  id: string;
+  expiryPageId: string;
+  linkId?: string;
+  email: string;
+  capturedAt: string;
+  ipHash?: string;
+  userAgent?: string;
 }

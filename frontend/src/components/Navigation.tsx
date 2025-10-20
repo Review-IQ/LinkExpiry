@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Link as LinkIcon, LogOut, Menu, X, LayoutDashboard, Settings as SettingsIcon } from 'lucide-react';
+import { Link as LinkIcon, LogOut, Menu, X, LayoutDashboard, Settings as SettingsIcon, Palette } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import Button from '@/components/ui/Button';
 
@@ -32,6 +32,9 @@ export default function Navigation() {
           <nav className="hidden md:flex items-center gap-4">
             <Link to="/dashboard" className="text-gray-900 font-medium hover:text-indigo-600 transition-colors">
               Dashboard
+            </Link>
+            <Link to="/expiry-pages" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Expiry Pages
             </Link>
             <Link to="/settings" className="text-gray-600 hover:text-gray-900 transition-colors">
               Settings
@@ -66,6 +69,14 @@ export default function Navigation() {
             >
               <LayoutDashboard className="h-5 w-5" />
               Dashboard
+            </Link>
+            <Link
+              to="/expiry-pages"
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            >
+              <Palette className="h-5 w-5" />
+              Expiry Pages
             </Link>
             <Link
               to="/settings"

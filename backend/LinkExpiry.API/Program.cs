@@ -53,6 +53,9 @@ else
 
 builder.Services.AddScoped<ShortCodeGenerator>(); // Changed from Singleton to Scoped
 
+// Email Service - Mailgun
+builder.Services.AddHttpClient<IEmailService, MailgunEmailService>();
+
 // ============================================
 // AUTHENTICATION - JWT Bearer
 // ============================================

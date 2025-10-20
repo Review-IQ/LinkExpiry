@@ -16,6 +16,8 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Link> Links { get; set; }
     public DbSet<Click> Clicks { get; set; }
+    public DbSet<ExpiryPage> ExpiryPages { get; set; }
+    public DbSet<ExpiryPageEmail> ExpiryPageEmails { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -70,6 +72,42 @@ public class AppDbContext : DbContext
                 .WithMany(l => l.Clicks)
                 .HasForeignKey(e => e.LinkId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ExpiryPage entity configuration
+        modelBuilder.Entity<ExpiryPage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.UserId);
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.ExpiryPages)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ExpiryPageEmail entity configuration
+        modelBuilder.Entity<ExpiryPageEmail>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ExpiryPageId);
+            entity.HasIndex(e => e.LinkId).HasFilter("link_id IS NOT NULL");
+            entity.HasIndex(e => e.CapturedAt);
+
+            entity.Property(e => e.CapturedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.ExpiryPage)
+                .WithMany(ep => ep.EmailCaptures)
+                .HasForeignKey(e => e.ExpiryPageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Link)
+                .WithMany()
+                .HasForeignKey(e => e.LinkId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 

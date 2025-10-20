@@ -13,6 +13,10 @@ import EditLink from './pages/EditLink';
 import LinkAnalytics from './pages/LinkAnalytics';
 import Settings from './pages/Settings';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
+import ExpiryPages from './pages/ExpiryPages';
+import CreateExpiryPage from './pages/CreateExpiryPage';
+import EditExpiryPage from './pages/EditExpiryPage';
+import ViewCapturedEmails from './pages/ViewCapturedEmails';
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -104,6 +108,38 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expiry-pages"
+          element={
+            <ProtectedRoute>
+              <ExpiryPages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expiry-pages/create"
+          element={
+            <ProtectedRoute>
+              <CreateExpiryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expiry-pages/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditExpiryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expiry-pages/:id/emails"
+          element={
+            <ProtectedRoute>
+              <ViewCapturedEmails />
             </ProtectedRoute>
           }
         />

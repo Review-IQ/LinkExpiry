@@ -82,6 +82,7 @@ public class LinkService : ILinkService
             MaxViews = request.MaxViews,
             PasswordHash = passwordHash,
             CustomMessage = request.CustomMessage,
+            ExpiryPageId = request.ExpiryPageId,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
         };
@@ -193,6 +194,11 @@ public class LinkService : ILinkService
         if (request.IsActive.HasValue)
         {
             link.IsActive = request.IsActive.Value;
+        }
+
+        if (request.ExpiryPageId.HasValue)
+        {
+            link.ExpiryPageId = request.ExpiryPageId.Value;
         }
 
         _unitOfWork.Links.Update(link);
@@ -325,6 +331,7 @@ public class LinkService : ILinkService
             ExpiryType = link.ExpiryType,
             HasPassword = !string.IsNullOrEmpty(link.PasswordHash),
             CustomMessage = link.CustomMessage,
+            ExpiryPageId = link.ExpiryPageId,
             Status = status
         };
     }

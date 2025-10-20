@@ -96,7 +96,8 @@ public class RedirectController : ControllerBase
                     l.MaxViews,
                     l.CurrentViews,
                     l.PasswordHash,
-                    l.CustomMessage
+                    l.CustomMessage,
+                    l.ExpiryPageId
                 })
                 .FirstOrDefaultAsync();
 
@@ -114,13 +115,7 @@ public class RedirectController : ControllerBase
             // 3. Check if link is already inactive
             if (!link.IsActive)
             {
-                return StatusCode(410, new
-                {
-                    error = "Link expired",
-                    message = link.CustomMessage ?? "This link has expired.",
-                    shortCode,
-                    reason = "inactive"
-                });
+                return await GetExpiryResponseAsync(link.ExpiryPageId, shortCode, link.CustomMessage, "inactive");
             }
 
             // 4. Check time-based expiry
@@ -131,14 +126,8 @@ public class RedirectController : ControllerBase
                 // Mark as inactive
                 await MarkLinkInactiveAsync(link.Id);
 
-                return StatusCode(410, new
-                {
-                    error = "Link expired",
-                    message = link.CustomMessage ?? $"This link expired on {link.ExpiresAt.Value:MMM dd, yyyy}.",
-                    shortCode,
-                    reason = "time_expired",
-                    expiredAt = link.ExpiresAt.Value
-                });
+                var defaultMessage = link.CustomMessage ?? $"This link expired on {link.ExpiresAt.Value:MMM dd, yyyy}.";
+                return await GetExpiryResponseAsync(link.ExpiryPageId, shortCode, defaultMessage, "time_expired", link.ExpiresAt.Value);
             }
 
             // 5. Check view-based expiry (before incrementing)
@@ -149,14 +138,8 @@ public class RedirectController : ControllerBase
                 // Mark as inactive
                 await MarkLinkInactiveAsync(link.Id);
 
-                return StatusCode(410, new
-                {
-                    error = "Link expired",
-                    message = link.CustomMessage ?? $"This link has reached its maximum view limit of {link.MaxViews.Value}.",
-                    shortCode,
-                    reason = "views_expired",
-                    maxViews = link.MaxViews.Value
-                });
+                var defaultMessage = link.CustomMessage ?? $"This link has reached its maximum view limit of {link.MaxViews.Value}.";
+                return await GetExpiryResponseAsync(link.ExpiryPageId, shortCode, defaultMessage, "views_expired", maxViews: link.MaxViews.Value);
             }
 
             // 6. Check password protection
@@ -324,5 +307,122 @@ public class RedirectController : ControllerBase
             // Never throw from fire-and-forget
             _logger.LogError(ex, "Error initiating click log for link {LinkId}", linkId);
         }
+    }
+
+    /// <summary>
+    /// Get expiry response - either custom expiry page or default JSON error
+    /// </summary>
+    private async Task<IActionResult> GetExpiryResponseAsync(
+        Guid? expiryPageId,
+        string shortCode,
+        string? defaultMessage,
+        string reason,
+        DateTime? expiredAt = null,
+        int? maxViews = null)
+    {
+        // If no custom expiry page, return default JSON response
+        if (!expiryPageId.HasValue)
+        {
+            var response = new
+            {
+                error = "Link expired",
+                message = defaultMessage ?? "This link has expired.",
+                shortCode,
+                reason
+            };
+
+            if (expiredAt.HasValue)
+            {
+                return StatusCode(410, new
+                {
+                    response.error,
+                    response.message,
+                    response.shortCode,
+                    response.reason,
+                    expiredAt = expiredAt.Value
+                });
+            }
+
+            if (maxViews.HasValue)
+            {
+                return StatusCode(410, new
+                {
+                    response.error,
+                    response.message,
+                    response.shortCode,
+                    response.reason,
+                    maxViews = maxViews.Value
+                });
+            }
+
+            return StatusCode(410, response);
+        }
+
+        // Fetch custom expiry page
+        var expiryPage = await _context.ExpiryPages
+            .AsNoTracking()
+            .Where(ep => ep.Id == expiryPageId.Value)
+            .Select(ep => new
+            {
+                ep.Id,
+                ep.Name,
+                ep.Title,
+                ep.Message,
+                ep.LogoUrl,
+                ep.BackgroundColor,
+                ep.CtaButtonText,
+                ep.CtaButtonUrl,
+                ep.CtaButtonColor,
+                ep.SocialFacebook,
+                ep.SocialTwitter,
+                ep.SocialInstagram,
+                ep.SocialLinkedin,
+                ep.SocialWebsite,
+                ep.CustomCss,
+                ep.EnableEmailCapture,
+                ep.EmailCaptureText
+            })
+            .FirstOrDefaultAsync();
+
+        // If custom page not found, fall back to default
+        if (expiryPage == null)
+        {
+            _logger.LogWarning("Expiry page {ExpiryPageId} not found for short code {ShortCode}", expiryPageId.Value, shortCode);
+            return StatusCode(410, new
+            {
+                error = "Link expired",
+                message = defaultMessage ?? "This link has expired.",
+                shortCode,
+                reason
+            });
+        }
+
+        // Return custom expiry page data
+        return StatusCode(410, new
+        {
+            error = "Link expired",
+            message = defaultMessage ?? "This link has expired.",
+            shortCode,
+            reason,
+            customExpiryPage = new
+            {
+                expiryPage.Id,
+                expiryPage.Title,
+                expiryPage.Message,
+                expiryPage.LogoUrl,
+                expiryPage.BackgroundColor,
+                expiryPage.CtaButtonText,
+                expiryPage.CtaButtonUrl,
+                expiryPage.CtaButtonColor,
+                expiryPage.SocialFacebook,
+                expiryPage.SocialTwitter,
+                expiryPage.SocialInstagram,
+                expiryPage.SocialLinkedin,
+                expiryPage.SocialWebsite,
+                expiryPage.CustomCss,
+                expiryPage.EnableEmailCapture,
+                expiryPage.EmailCaptureText
+            }
+        });
     }
 }

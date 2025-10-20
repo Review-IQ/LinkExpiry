@@ -60,9 +60,15 @@ public class Link
     [Column("total_clicks")]
     public int TotalClicks { get; set; } = 0;
 
+    [Column("expiry_page_id")]
+    public Guid? ExpiryPageId { get; set; }
+
     // Navigation properties
     [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
+
+    [ForeignKey("ExpiryPageId")]
+    public virtual ExpiryPage? ExpiryPage { get; set; }
 
     public virtual ICollection<Click> Clicks { get; set; } = new List<Click>();
 }

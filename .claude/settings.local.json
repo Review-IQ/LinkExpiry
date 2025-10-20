@@ -22,7 +22,9 @@
       "Bash(\"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe\" -U postgres -d linkexpiry_dev -f database/02_add_click_geolocation_fields.sql)",
       "Bash(\"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe\" -U postgres -l)",
       "Bash(\"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe\" -U postgres -d linkexpiry -f database/01_add_user_profile_fields.sql)",
-      "Bash(\"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe\" -U postgres -d linkexpiry -f database/02_add_click_geolocation_fields.sql)"
+      "Bash(\"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe\" -U postgres -d linkexpiry -f database/02_add_click_geolocation_fields.sql)",
+      "WebSearch",
+      "WebFetch(domain:bitly.com)"
     ],
     "deny": [],
     "ask": []
