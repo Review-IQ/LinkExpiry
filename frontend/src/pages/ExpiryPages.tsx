@@ -5,9 +5,7 @@ import {
   Plus,
   Edit,
   Trash2,
-  Eye,
   Mail,
-  ExternalLink,
   FileText,
   Palette,
 } from 'lucide-react';
