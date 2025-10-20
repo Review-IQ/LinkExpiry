@@ -28,6 +28,14 @@ export default function ShortLinkRedirect() {
       return;
     }
 
+    // If no backend URL configured (GitHub Pages deployment), show message and redirect to home
+    if (!import.meta.env.VITE_API_URL) {
+      setLinkExpired(true);
+      setExpiredMessage('This is a demo deployment. Link redirection requires a backend server.');
+      setIsLoading(false);
+      return;
+    }
+
     if (!hasChecked.current) {
       hasChecked.current = true;
       checkLink();
